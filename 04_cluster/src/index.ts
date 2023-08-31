@@ -40,7 +40,9 @@ else {
       console.log(
         `[${cluster.worker.id}] [PID ${cluster.worker.process.pid}] Request`
       );
-    res.send("Hello World");
+    res.send(
+      `[${cluster.worker?.id}] [PID ${cluster.worker?.process.pid}] Request`
+    );
   });
 
   // サーバーを起動する処理
