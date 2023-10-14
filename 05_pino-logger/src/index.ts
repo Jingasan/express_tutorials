@@ -13,7 +13,7 @@ app.use(logger);
 // GET
 app.get("/", async (req: Request, res: Response, _next: NextFunction) => {
   // ログ出力
-  req.log.info("api endpoint");
+  req.log.info("start");
   logger.logger.info("hello");
   return res.status(200).send({
     message: "Hello World!",
