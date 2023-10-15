@@ -14,4 +14,11 @@ export const logger = pinoHttp({
       mkdir: true, // ディレクトリがない場合、作成する
     },
   },
+  // 開発向けのpretty-print（本番は上記のNDJSON形式が望ましい）
+  //   transport: {
+  //     target: "pino-pretty",
+  //     options: {
+  //       translateTime: "UTC:yyyy-mm-dd HH:MM:ss.l o",
+  //     },
+  //   },
 });
