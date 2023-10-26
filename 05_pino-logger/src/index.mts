@@ -1,6 +1,6 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
-import { logger } from "./logger";
+import { logger } from "./logger.mjs";
 const app: Application = express();
 const PORT = 3000;
 // リクエストボディのパース用設定

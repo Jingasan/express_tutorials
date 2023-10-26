@@ -1,6 +1,6 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
-import { metricsRegistry, http_request_counter } from "./metrics";
+import { metricsRegistry, http_request_counter } from "./metrics.mjs";
 const app: Application = express();
 const PORT = 3000;
 // リクエストボディのパース用設定
