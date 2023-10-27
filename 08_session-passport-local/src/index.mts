@@ -10,6 +10,7 @@ import session from "express-session";
 import passport from "passport";
 import LocalStrategy from "passport-local";
 import cors from "cors";
+import { randomUUID } from "crypto";
 const app: Application = express();
 const PORT = 3000;
 // リクエストボディのパース用設定
@@ -18,7 +19,19 @@ app.use(express.urlencoded({ extended: true }));
 // CORS設定
 app.use(cors());
 // Sessionの設定
-app.use(session({ secret: "1234", resave: false, saveUninitialized: false }));
+app.use(
+  session({
+    secret: randomUUID(), // [Must] セッションIDを保存するCookieの署名に使用される, ランダムな値にすることを推奨
+    name: "session", // [Option] Cookie名, connect.id(default)(変更推奨)
+    resave: false, // [Option] true(default):リクエスト中にセッションが変更されなかった場合でも強制的にセッションストアの保存し直す
+    saveUninitialized: true, // [Option] true(default): 初期化されていないセッションを強制的にセッションストアに保存する
+    cookie: {
+      path: "/", // (default): Cookieを送信するPATH
+      httpOnly: true, // (default): document.cookieを使ってCookieを扱えなくする
+      maxAge: 10 * 1000, // Cookieの有効期限[ms]
+    },
+  })
+);
 // Passportの初期化
 app.use(passport.initialize());
 app.use(passport.session());
@@ -101,6 +114,7 @@ app.post(
 app.get("/", (req: Request, res: Response) => {
   // ログイン状態を直接「req.user」から調べる
   if (!req.user) {
+    // 未ログイン時
     return res.redirect("/login");
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
@@ -119,14 +133,13 @@ app.get("/", (req: Request, res: Response) => {
  * ログアウト処理
  */
 app.get("/logout", (req: Request, res: Response, next: NextFunction) => {
+  // ログアウト
   req.logout((err) => {
     if (err) {
       return next(err);
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const session: any = req.session;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    session.destroy();
+    // セッションを削除
+    req.session.destroy(() => {});
     res.redirect("/");
   });
 });
