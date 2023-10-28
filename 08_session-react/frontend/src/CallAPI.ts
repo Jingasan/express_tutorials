@@ -6,7 +6,9 @@ import axios from "axios";
  */
 export const checkAuthAPI = async (): Promise<boolean> => {
   try {
-    const response = await axios.get("/api/isAuthenticated");
+    const apiURL = "/api/isAuthenticated";
+    console.log(apiURL);
+    const response = await axios.get(apiURL);
     return response.data.isAuthenticated;
   } catch (err) {
     console.error(err);
@@ -25,7 +27,9 @@ export const loginAPI = async (
   password: string
 ): Promise<boolean> => {
   try {
-    const response = await axios.post("/api/login", { username, password });
+    const apiURL = "/api/login";
+    console.log(apiURL);
+    const response = await axios.post(apiURL, { username, password });
     return response.data.isAuthenticated;
   } catch (err) {
     return false;
@@ -37,7 +41,9 @@ export const loginAPI = async (
  */
 export const logoutAPI = async (): Promise<void> => {
   try {
-    await axios.post("/api/logout");
+    const apiURL = "/api/logout";
+    console.log(apiURL);
+    await axios.post(apiURL);
   } catch (err) {
     console.error(err);
   }
@@ -49,7 +55,9 @@ export const logoutAPI = async (): Promise<void> => {
  */
 export const getProductsAPI = async (): Promise<string[]> => {
   try {
-    const res = await axios.get("/api/shopping/get-products");
+    const apiURL = "/api/shopping/get-products";
+    console.log(apiURL);
+    const res = await axios.get(apiURL);
     return res.data;
   } catch (err) {
     console.error(err);
@@ -63,7 +71,9 @@ export const getProductsAPI = async (): Promise<string[]> => {
  */
 export const initCartAPI = async (): Promise<string[]> => {
   try {
-    const res = await axios.get("/api/shopping/init-cart");
+    const apiURL = "/api/shopping/init-cart";
+    console.log(apiURL);
+    const res = await axios.get(apiURL);
     return res.data.products;
   } catch (err) {
     console.error(err);
@@ -77,7 +87,9 @@ export const initCartAPI = async (): Promise<string[]> => {
  */
 export const addCartAPI = async (name: string): Promise<string[]> => {
   try {
-    const res = await axios.get(`/api/shopping/add-cart?product=${name}`);
+    const apiURL = `/api/shopping/add-cart?product=${name}`;
+    console.log(apiURL);
+    const res = await axios.get(apiURL);
     return res.data.products;
   } catch (err) {
     console.error(err);
@@ -90,7 +102,9 @@ export const addCartAPI = async (name: string): Promise<string[]> => {
  */
 export const clearCartAPI = async (): Promise<string[]> => {
   try {
-    const res = await axios.get("/api/shopping/clear-cart");
+    const apiURL = "/api/shopping/clear-cart";
+    console.log(apiURL);
+    const res = await axios.get(apiURL);
     return res.data.products;
   } catch (err) {
     console.error(err);
