@@ -36,9 +36,9 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// サンプルユーザー
-const User = {
-  name: "user",
+// ログインアカウント
+const Account = {
+  username: "user",
   password: "password",
 };
 
@@ -48,10 +48,10 @@ const User = {
 passport.use(
   "local",
   new LocalStrategy.Strategy((username, password, cb) => {
-    if (username !== User.name) {
+    if (username !== Account.username) {
       // ユーザー名不一致：認証失敗
       return cb(null, false);
-    } else if (password !== User.password) {
+    } else if (password !== Account.password) {
       // パスワード不一致：認証失敗
       return cb(null, false);
     } else {

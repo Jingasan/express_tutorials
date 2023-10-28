@@ -30,9 +30,9 @@ declare module "express-session" {
     isAuthenticated: boolean;
   }
 }
-// ログインユーザー
-const User = {
-  name: "user",
+// ログインアカウント
+const Account = {
+  username: "user",
   password: "password",
 };
 
@@ -71,7 +71,10 @@ app.post("/login", (req: Request, res: Response) => {
     password: string;
   } = req.body;
   // ユーザー認証
-  if (body.username === User.name && body.password === User.password) {
+  if (
+    body.username === Account.username &&
+    body.password === Account.password
+  ) {
     req.session.isAuthenticated = true;
   }
   res.redirect("/");
