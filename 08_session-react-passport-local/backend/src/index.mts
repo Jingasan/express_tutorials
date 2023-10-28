@@ -13,12 +13,12 @@ app.use(cors());
 /**
  * 認証関連のAPI
  */
-app.use("/", authRouter());
+app.use("/api", authRouter());
 
 /**
  * 買い物関連のAPI
  */
-app.use("/shopping", shoppingRouter());
+app.use("/api/shopping", shoppingRouter());
 
 /**
  * Error 404 Not Found
