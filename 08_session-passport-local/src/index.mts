@@ -23,19 +23,19 @@ app.use(
   session({
     secret: randomUUID(), // [Must] セッションIDを保存するCookieの署名に使用される, ランダムな値にすることを推奨
     name: "session", // [Option] Cookie名, connect.id(default)(変更推奨)
-    resave: false, // [Option] true(default):リクエスト中にセッションが変更されなかった場合でも強制的にセッションストアの保存し直す
+    rolling: true, // [Option] アクセス時にセッションの有効期限をリセットする
+    resave: true, // [Option] true(default):リクエスト中にセッションが変更されなかった場合でも強制的にセッションストアの保存し直す
     saveUninitialized: true, // [Option] true(default): 初期化されていないセッションを強制的にセッションストアに保存する
     cookie: {
-      path: "/", // (default): Cookieを送信するPATH
-      httpOnly: true, // (default): document.cookieを使ってCookieを扱えなくする
-      maxAge: 10 * 1000, // Cookieの有効期限[ms]
+      path: "/", // [Option] "/"(default): Cookieを送信するPATH
+      httpOnly: true, // [Option] true(default): httpのみで使用, document.cookieを使ってCookieを扱えなくする
+      maxAge: 10 * 1000, // [Option] Cookieの有効期限[ms]
     },
   })
 );
 // Passportの初期化
 app.use(passport.initialize());
 app.use(passport.session());
-
 // ログインアカウント
 const Account = {
   username: "user",
