@@ -112,9 +112,8 @@ app.post(
  * ログイン結果のページ
  */
 app.get("/", (req: Request, res: Response) => {
-  // ログイン状態を直接「req.user」から調べる
-  if (!req.user) {
-    // 未ログイン時
+  // 未ログイン時
+  if (!req.isAuthenticated()) {
     return res.redirect("/login");
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
@@ -122,7 +121,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send(`
   <html>
   <body>
-    <div>Login user: ${username}</div>
+    <div>Login Username: ${username}</div>
     <div><a href="/logout">logout</a></div>
   </body>
   </html>
