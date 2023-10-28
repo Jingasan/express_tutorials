@@ -3,7 +3,7 @@ import cors from "cors";
 import { authRouter } from "./auth.mjs";
 import { shoppingRouter } from "./shopping.mjs";
 const app = express();
-const PORT = 8080;
+const PORT = 3000;
 // リクエストボディのパース用設定
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

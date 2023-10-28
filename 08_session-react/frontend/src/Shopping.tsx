@@ -41,14 +41,14 @@ export default function Shopping() {
   return (
     <div>
       <h1>買い物画面</h1>
-      <div>かごの中身</div>
+      <div>【かごの中身】</div>
       <div>{cart.join(", ")}</div>
       <br />
       <div>
         <button onClick={() => clearCart()}>かごを空にする</button>
       </div>
       <br />
-      <div>商品一覧</div>
+      <div>【商品一覧】</div>
       {products.map((product, index) => (
         <div key={index}>
           ・{product} <button onClick={() => addCart(product)}>追加</button>

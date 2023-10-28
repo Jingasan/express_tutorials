@@ -7,7 +7,7 @@ import axios from "axios";
 export const checkAuthAPI = async (): Promise<boolean> => {
   try {
     const apiURL = "/api/isAuthenticated";
-    console.log(apiURL);
+    console.debug(apiURL);
     const response = await axios.get(apiURL);
     return response.data.isAuthenticated;
   } catch (err) {
@@ -28,7 +28,7 @@ export const loginAPI = async (
 ): Promise<boolean> => {
   try {
     const apiURL = "/api/login";
-    console.log(apiURL);
+    console.debug(apiURL);
     const response = await axios.post(apiURL, { username, password });
     return response.data.isAuthenticated;
   } catch (err) {
@@ -42,7 +42,7 @@ export const loginAPI = async (
 export const logoutAPI = async (): Promise<void> => {
   try {
     const apiURL = "/api/logout";
-    console.log(apiURL);
+    console.debug(apiURL);
     await axios.post(apiURL);
   } catch (err) {
     console.error(err);
@@ -56,7 +56,7 @@ export const logoutAPI = async (): Promise<void> => {
 export const getProductsAPI = async (): Promise<string[]> => {
   try {
     const apiURL = "/api/shopping/get-products";
-    console.log(apiURL);
+    console.debug(apiURL);
     const res = await axios.get(apiURL);
     return res.data;
   } catch (err) {
@@ -72,7 +72,7 @@ export const getProductsAPI = async (): Promise<string[]> => {
 export const initCartAPI = async (): Promise<string[]> => {
   try {
     const apiURL = "/api/shopping/init-cart";
-    console.log(apiURL);
+    console.debug(apiURL);
     const res = await axios.get(apiURL);
     return res.data.products;
   } catch (err) {
@@ -88,7 +88,7 @@ export const initCartAPI = async (): Promise<string[]> => {
 export const addCartAPI = async (name: string): Promise<string[]> => {
   try {
     const apiURL = `/api/shopping/add-cart?product=${name}`;
-    console.log(apiURL);
+    console.debug(apiURL);
     const res = await axios.get(apiURL);
     return res.data.products;
   } catch (err) {
@@ -103,7 +103,7 @@ export const addCartAPI = async (name: string): Promise<string[]> => {
 export const clearCartAPI = async (): Promise<string[]> => {
   try {
     const apiURL = "/api/shopping/clear-cart";
-    console.log(apiURL);
+    console.debug(apiURL);
     const res = await axios.get(apiURL);
     return res.data.products;
   } catch (err) {
