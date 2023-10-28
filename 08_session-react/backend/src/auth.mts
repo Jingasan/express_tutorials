@@ -95,7 +95,11 @@ export const authRouter = () => {
    */
   router.post("/logout", (req: Request, res: Response) => {
     req.session.isAuthenticated = false;
-    req.session.destroy(() => {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json("Internal Server Error");
+      }
       return res.status(200).json({ isAuthenticated: false });
     });
   });

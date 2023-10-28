@@ -86,7 +86,12 @@ app.post("/login", (req: Request, res: Response) => {
  */
 app.post("/logout", (req: Request, res: Response) => {
   req.session.isAuthenticated = false;
-  res.redirect("/");
+  req.session.destroy((err) => {
+    if (err) {
+      console.error(err);
+    }
+    res.redirect("/");
+  });
 });
 
 /**

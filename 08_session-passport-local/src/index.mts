@@ -139,7 +139,11 @@ app.get("/logout", (req: Request, res: Response, next: NextFunction) => {
       return next(err);
     }
     // セッションを削除
-    req.session.destroy(() => {});
+    req.session.destroy((err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
     res.redirect("/");
   });
 });
