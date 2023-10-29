@@ -2,9 +2,14 @@ import React from "react";
 import Shopping from "./Shopping";
 import { checkAuthAPI, loginAPI, logoutAPI } from "./CallAPI";
 
+/**
+ * ログインページ
+ */
 export default function App() {
   // ログイン済みかどうか
   const [isLogin, setIsLogin] = React.useState(false);
+  // ログイン処理に成功したかどうか
+  const [isLoginError, setIsLoginError] = React.useState(false);
   // ユーザー名／パスワード
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -13,6 +18,7 @@ export default function App() {
    * 画面の初期化：ログイン状態をチェック
    */
   React.useEffect(() => {
+    setIsLoginError(false);
     const init = async () => setIsLogin(await checkAuthAPI());
     init();
   }, []);
@@ -21,7 +27,9 @@ export default function App() {
    * ログイン処理
    */
   const handleLogin = async () => {
-    setIsLogin(await loginAPI(username, password));
+    const res = await loginAPI(username, password);
+    setIsLogin(res);
+    setIsLoginError(!res);
   };
 
   /**
@@ -56,6 +64,9 @@ export default function App() {
             onChange={(e) => setPassword(e.target.value)}
           />
           <button onClick={handleLogin}>Login</button>
+          <br />
+          <br />
+          {isLoginError ? <div style={{ color: "red" }}>ログイン失敗</div> : ""}
         </div>
       )}
     </div>

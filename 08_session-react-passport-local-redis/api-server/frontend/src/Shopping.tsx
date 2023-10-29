@@ -6,6 +6,9 @@ import {
   clearCartAPI,
 } from "./CallAPI";
 
+/**
+ * 買い物ページ
+ */
 export default function Shopping() {
   // 商品一覧
   const [products, setProducts] = React.useState<string[]>([]);
