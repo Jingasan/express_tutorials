@@ -1,6 +1,26 @@
 import axios from "axios";
 
 /**
+ * サインアップAPI
+ * @param username 新規ログインユーザー名
+ * @param password ログインパスワード
+ * @returns true:サインアップ成功/false:サインアップ失敗
+ */
+export const signupAPI = async (
+  username: string,
+  password: string
+): Promise<boolean> => {
+  try {
+    const apiURL = "/api/signup";
+    console.debug(apiURL);
+    const response = await axios.post(apiURL, { username, password });
+    return response.data.result;
+  } catch (err) {
+    return false;
+  }
+};
+
+/**
  * ログイン状態の確認
  * @returns true:ログイン済/false:未ログイン
  */

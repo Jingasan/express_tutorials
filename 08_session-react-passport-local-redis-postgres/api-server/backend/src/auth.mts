@@ -42,14 +42,6 @@ export const authRouter = () => {
   const router = express.Router();
 
   /**
-   * ログインアカウント
-   */
-  //   const Account = {
-  //     username: String(process.env.NODE_API_SERVER_LOGIN_USERNAME),
-  //     password: String(process.env.NODE_API_SERVER_LOGIN_PASSWORD),
-  //   };
-
-  /**
    * Redisセッションストアの設定
    */
   const redisClient = new IORedis.Redis({
@@ -137,37 +129,45 @@ export const authRouter = () => {
   };
 
   /**
-   * アカウント登録APIのミドルウェア
+   * サインアップAPIのミドルウェア
    * @param req
    * @param res
    * @param next
    * @returns
    */
-  const registerCheckMiddleware = async (
+  const signupCheckMiddleware = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
+    const errors = [];
     const body = req.body;
     // リクエストボディのチェック
-    if (!body.username) return res.status(400).json("NO_USERNAME");
-    if (!body.password) return res.status(400).json("NO_PASSWORD");
-    // ユーザー名がすでに登録されていないかチェック
-    const password = await dbController.getPassword(body.username);
-    if (password) return res.status(400).json("USERNAME_ALREADY_REGISTERED");
+    if (!body.username) errors.push("NO_USERNAME");
+    if (!body.password) errors.push("NO_PASSWORD");
+    if (body.username && body.password) {
+      // ユーザー名がすでに登録されていないかチェック
+      const password = await dbController.getPassword(body.username);
+      if (password) errors.push("USERNAME_ALREADY_EXISTS");
+    }
+    if (errors.length > 0)
+      return res.status(400).json({ result: false, errors: errors });
     next();
   };
 
   /**
-   * アカウント登録API
+   * サインアップAPI
    */
-  router.post("/register", registerCheckMiddleware, async (req, res) => {
+  router.post("/signup", signupCheckMiddleware, async (req, res) => {
     const body = req.body;
     // 新規ログインユーザーの作成
     const hashedPassword = passwordToHash(body.password);
     const result = await dbController.register(body.username, hashedPassword);
-    if (!result) return res.status(500).json("INTERNAL SERVER ERROR");
-    return res.status(200).json("OK");
+    if (!result)
+      return res
+        .status(500)
+        .json({ result: false, errors: ["INTERNAL_SERVER_ERROR"] });
+    return res.status(200).json({ result: true, errors: [] });
   });
 
   /**
@@ -192,7 +192,7 @@ export const authRouter = () => {
   /**
    * ログアウトAPI
    */
-  router.post("/logout", (req: Request, res: Response) => {
+  router.post("/logout", authMiddleware, (req: Request, res: Response) => {
     // ログアウト
     req.logout((err) => {
       if (err) {
