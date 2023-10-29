@@ -88,11 +88,28 @@ class DBController {
     password: string
   ): Promise<boolean> => {
     try {
-      // データ追加
+      // ユーザー追加
       await this.model.create({ username: username, password: password });
       return true;
     } catch (err) {
-      // データ追加失敗時
+      // ユーザー追加失敗時
+      console.error(err);
+      return false;
+    }
+  };
+
+  /**
+   * ログインユーザーの削除
+   * @param username 削除対象ユーザー
+   * @returns true:成功/false:失敗
+   */
+  public unregister = async (username: string): Promise<boolean> => {
+    try {
+      // ユーザー削除
+      await this.model.destroy({ where: { username: username } });
+      return true;
+    } catch (err) {
+      // ユーザー削除失敗時
       console.error(err);
       return false;
     }

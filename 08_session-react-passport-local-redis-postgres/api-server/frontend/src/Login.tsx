@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Shopping from "./Shopping";
-import { checkAuthAPI, loginAPI, logoutAPI } from "./CallAPI";
+import { checkAuthAPI, loginAPI, logoutAPI, userdeleteAPI } from "./CallAPI";
 
 /**
  * ログインページ
@@ -10,7 +10,9 @@ export default function Login() {
   // ログイン済みかどうか
   const [isLogin, setIsLogin] = React.useState(false);
   // ログイン失敗メッセージを表示するかどうか
-  const [isFailedMessage, setIsFailedMessage] = React.useState(false);
+  const [isLoginFailedMessage, setIsLoginFailedMessage] = React.useState(false);
+  // ユーザー削除成功メッセージを表示するかどうか
+  const [isUserDeletedMessage, setIsUserDeletedMessage] = React.useState(false);
   // ユーザー名／パスワード
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -19,7 +21,8 @@ export default function Login() {
    * 画面の初期化：ログイン状態をチェック
    */
   React.useEffect(() => {
-    setIsFailedMessage(false);
+    setIsLoginFailedMessage(false);
+    setIsUserDeletedMessage(false);
     const init = async () => setIsLogin(await checkAuthAPI());
     init();
   }, []);
@@ -30,7 +33,8 @@ export default function Login() {
   const handleLogin = async () => {
     const res = await loginAPI(username, password);
     setIsLogin(res);
-    setIsFailedMessage(!res);
+    setIsLoginFailedMessage(!res);
+    setIsUserDeletedMessage(false);
   };
 
   /**
@@ -41,6 +45,16 @@ export default function Login() {
     setIsLogin(false);
   };
 
+  /**
+   * ユーザー削除処理
+   */
+  const handleDeleteUser = async () => {
+    await userdeleteAPI(username);
+    setIsLogin(false);
+    setIsLoginFailedMessage(false);
+    setIsUserDeletedMessage(true);
+  };
+
   return (
     <div style={{ margin: "30px" }} className="App">
       {isLogin ? (
@@ -48,6 +62,7 @@ export default function Login() {
           <Shopping />
           <br />
           <button onClick={handleLogout}>Logout</button>
+          <button onClick={handleDeleteUser}>Delete User</button>
         </div>
       ) : (
         <div>
@@ -67,8 +82,13 @@ export default function Login() {
           <button onClick={handleLogin}>Login</button>
           <br />
           <br />
-          {isFailedMessage ? (
+          {isLoginFailedMessage ? (
             <div style={{ color: "red" }}>ログイン失敗</div>
+          ) : (
+            ""
+          )}
+          {isUserDeletedMessage ? (
+            <div style={{ color: "blue" }}>ユーザーを削除しました</div>
           ) : (
             ""
           )}

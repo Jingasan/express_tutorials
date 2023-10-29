@@ -190,25 +190,82 @@ export const authRouter = () => {
   );
 
   /**
-   * ログアウトAPI
+   * ログアウト処理
+   * @param req
+   * @param res
    */
-  router.post("/logout", authMiddleware, (req: Request, res: Response) => {
+  const logout = (req: Request, res: Response): boolean => {
     // ログアウト
     req.logout((err) => {
       if (err) {
         console.error(err);
-        return res.status(500).json("Internal Server Error");
+        return;
       }
       // セッションを削除
       req.session.destroy((err) => {
         if (err) {
           console.error(err);
-          return res.status(500).json("Internal Server Error");
         }
       });
-      return res.status(200).json({ isAuthenticated: false });
     });
+    return true;
+  };
+
+  /**
+   * ログアウトAPI
+   */
+  router.post("/logout", authMiddleware, (req: Request, res: Response) => {
+    logout(req, res);
+    return res.status(200).json({ isAuthenticated: false });
   });
+
+  /**
+   * ユーザー削除APIのミドルウェア
+   * @param req
+   * @param res
+   * @param next
+   * @returns
+   */
+  const deleteUserCheckMiddleware = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const errors = [];
+    const body = req.body;
+    // リクエストボディにユーザー名が含まれているかチェック
+    if (!body.username) {
+      errors.push("NO_USERNAME");
+    } else {
+      // ユーザーが登録されているかチェック
+      const password = await dbController.getPassword(body.username);
+      if (!password) errors.push("USERNAME_NOT_EXISTS");
+    }
+    if (errors.length > 0)
+      return res.status(400).json({ result: false, errors: errors });
+    next();
+  };
+
+  /**
+   * ユーザー削除API
+   */
+  router.post(
+    "/delete",
+    authMiddleware,
+    deleteUserCheckMiddleware,
+    async (req: Request, res: Response) => {
+      const body = req.body;
+      // ログインユーザーの削除
+      const result = await dbController.unregister(body.username);
+      if (!result)
+        return res
+          .status(500)
+          .json({ result: false, errors: ["INTERNAL_SERVER_ERROR"] });
+      // ログアウト
+      logout(req, res);
+      return res.status(200).json({ result: true, errors: [] });
+    }
+  );
 
   return router;
 };

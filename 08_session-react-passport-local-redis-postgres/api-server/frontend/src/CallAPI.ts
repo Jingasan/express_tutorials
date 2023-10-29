@@ -70,6 +70,23 @@ export const logoutAPI = async (): Promise<void> => {
 };
 
 /**
+ * ユーザー削除API
+ * @param username 削除対象ユーザー
+ * @returns true:削除成功/false:削除失敗
+ */
+export const userdeleteAPI = async (username: string): Promise<boolean> => {
+  try {
+    const apiURL = "/api/delete";
+    console.debug(apiURL);
+    const response = await axios.post(apiURL, { username });
+    return response.data.result;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+};
+
+/**
  * 商品一覧の取得API
  * @returns 商品一覧
  */
