@@ -46,7 +46,7 @@ services:
         - https_proxy=$https_proxy
     platform: linux/amd64
     ports:
-      - "$DB_SERVER_PORT:$DB_SERVER_PORT"
+      - $DB_SERVER_PORT:$DB_SERVER_PORT
     volumes: # ボリュームのアタッチ
       - ./db-server/data:/var/lib/postgresql/data # DBデータ
     env_file:
