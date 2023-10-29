@@ -47,14 +47,16 @@ export const authRouter = () => {
 
   /**
    * セッションの設定
+   * デフォルトではセッションはインメモリに保管される(APIサーバーが複数台になるような実運用環境下では利用できない)
+   * 実運用環境では必ずRedisやDBをセッションストアとして用いること
    */
   router.use(
     session({
       secret: randomUUID(), // [Must] セッションIDを保存するCookieの署名に使用される, ランダムな値にすることを推奨
       name: "session", // [Option] Cookie名, connect.id(default)(変更推奨)
       rolling: true, // [Option] アクセス時にセッションの有効期限をリセットする
-      resave: true, // [Option] true(default):リクエスト中にセッションが変更されなかった場合でも強制的にセッションストアの保存し直す
-      saveUninitialized: true, // [Option] true(default): 初期化されていないセッションを強制的にセッションストアに保存する
+      resave: false, // [Option] true(default):リクエスト中にセッションが変更されなかった場合でも強制的にセッションストアの保存し直す
+      saveUninitialized: false, // [Option] true(default): 初期化されていないセッションを強制的にセッションストアに保存する
       cookie: {
         path: "/", // [Option] "/"(default): Cookieを送信するPATH
         httpOnly: true, // [Option] true(default): httpのみで使用, document.cookieを使ってCookieを扱えなくする

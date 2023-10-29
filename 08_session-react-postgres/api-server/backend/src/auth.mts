@@ -63,28 +63,29 @@ export const authRouter = () => {
     db: sequelize, // DBサーバーの設定
     tableName: "session", // セッションを格納するテーブル名
     checkExpirationInterval:
-      Number(process.env.DB_SERVER_SESSION_CLEANUP_INTERVAL) * 1000, // DBからの期限切れセッションの削除間隔: 15min (default)
+      Number(process.env.NODE_API_SERVER_SESSION_CLEANUP_INTERVAL) * 1000, // DBからの期限切れセッションの削除間隔: 15min (default)
   });
   // DBにセッション保管用のテーブルを作成
   store.sync();
 
   /**
    * セッションの設定
+   * デフォルトではセッションはインメモリに保管される(APIサーバーが複数台になるような実運用環境下では利用できない)
+   * 実運用環境では必ずRedisやDBをセッションストアとして用いること
    */
   router.use(
     session({
       secret: randomUUID(), // [Must] セッションIDを保存するCookieの署名に使用される, ランダムな値にすることを推奨
       name: "session", // [Option] Cookie名, connect.id(default)(変更推奨)
       rolling: true, // [Option] アクセス時にセッションの有効期限をリセットする
-      resave: true, // [Option] true(default):リクエスト中にセッションが変更されなかった場合でも強制的にセッションストアの保存し直す
-      saveUninitialized: true, // [Option] true(default): 初期化されていないセッションを強制的にセッションストアに保存する
+      resave: false, // [Option] true(default):リクエスト中にセッションが変更されなかった場合でも強制的にセッションストアの保存し直す
+      saveUninitialized: false, // [Option] true(default): 初期化されていないセッションを強制的にセッションストアに保存する
       cookie: {
         path: "/", // [Option] "/"(default): Cookieを送信するPATH
         httpOnly: true, // [Option] true(default): httpのみで使用, document.cookieを使ってCookieを扱えなくする
         maxAge: Number(process.env.NODE_API_SERVER_SESSION_TIMEOUT) * 1000, // [Option] Cookieの有効期限[ms]
       },
-      store: store,
-      proxy: true,
+      store: store, // [Option] セッションストア
     })
   );
 
