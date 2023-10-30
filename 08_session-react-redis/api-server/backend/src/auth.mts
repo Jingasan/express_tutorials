@@ -80,46 +80,85 @@ export const authRouter = () => {
   );
 
   /**
+   * セッション削除
+   * @param req
+   */
+  const destroySession = (req: Request): void => {
+    // セッションを削除
+    req.session.destroy((err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+  };
+
+  /**
+   * 有効セッション数の制限
+   * @param req
+   * @param res
+   * @returns
+   */
+  const sessionNumLimitMiddleware = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const maxSessionNum = Number(process.env.NODE_API_SERVER_MAX_SESSION_NUM); // 最大有効セッション数
+    const sessions = await redisClient.keys("session:*");
+    if (sessions.length >= maxSessionNum) {
+      console.info(
+        `[INFO] The number of sessions has reached the maximum limit: ${sessions.length}`
+      );
+      destroySession(req);
+      return res.status(429).json({ isAuthenticated: false });
+    }
+    next();
+  };
+
+  /**
    * ログイン確認
    */
   router.get("/isAuthenticated", (req, res) => {
-    if (!req.session.isAuthenticated) req.session.isAuthenticated = false;
-    res.status(200).json({ isAuthenticated: req.session.isAuthenticated });
+    if (!req.session.isAuthenticated) {
+      destroySession(req);
+      return res.status(200).json({ isAuthenticated: false });
+    }
+    return res
+      .status(200)
+      .json({ isAuthenticated: req.session.isAuthenticated });
   });
 
   /**
    * ログインAPI
    */
-  router.post("/login", (req: Request, res: Response) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const body: {
-      username: string;
-      password: string;
-    } = req.body;
-    // 認証処理
-    if (
-      body.username === Account.username &&
-      body.password === Account.password
-    ) {
-      req.session.isAuthenticated = true;
-      return res.status(200).json({ isAuthenticated: true });
-    } else {
-      return res.status(401).json({ isAuthenticated: false });
+  router.post(
+    "/login",
+    sessionNumLimitMiddleware,
+    (req: Request, res: Response) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const body: {
+        username: string;
+        password: string;
+      } = req.body;
+      // 認証処理
+      if (
+        body.username === Account.username &&
+        body.password === Account.password
+      ) {
+        req.session.isAuthenticated = true;
+        return res.status(200).json({ isAuthenticated: true });
+      } else {
+        return res.status(401).json({ isAuthenticated: false });
+      }
     }
-  });
+  );
 
   /**
    * ログアウトAPI
    */
   router.post("/logout", (req: Request, res: Response) => {
-    req.session.isAuthenticated = false;
-    req.session.destroy((err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json("Internal Server Error");
-      }
-      return res.status(200).json({ isAuthenticated: false });
-    });
+    destroySession(req);
+    return res.status(200).json({ isAuthenticated: false });
   });
 
   return router;

@@ -126,6 +126,48 @@ export const authRouter = () => {
   });
 
   /**
+   * セッション削除
+   * @param req
+   */
+  const destroySession = (req: Request): void => {
+    // ログアウト
+    req.logout((err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      // セッションを削除
+      req.session.destroy((err) => {
+        if (err) {
+          console.error(err);
+        }
+      });
+    });
+  };
+
+  /**
+   * 有効セッション数の制限
+   * @param req
+   * @param res
+   * @returns
+   */
+  const sessionNumLimitMiddleware = async (
+    _req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const maxSessionNum = Number(process.env.NODE_API_SERVER_MAX_SESSION_NUM); // 最大有効セッション数
+    const sessions = await redisClient.keys("session:*");
+    if (sessions.length >= maxSessionNum) {
+      console.info(
+        `[INFO] The number of sessions has reached the maximum limit: ${sessions.length}`
+      );
+      return res.status(429).json({ isAuthenticated: false });
+    }
+    next();
+  };
+
+  /**
    * ログイン確認
    */
   router.get("/isAuthenticated", (req, res) => {
@@ -137,6 +179,7 @@ export const authRouter = () => {
    */
   router.post(
     "/login",
+    sessionNumLimitMiddleware,
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     passport.authenticate("local"),
     (_req: Request, res: Response) => {
@@ -148,21 +191,8 @@ export const authRouter = () => {
    * ログアウトAPI
    */
   router.post("/logout", (req: Request, res: Response) => {
-    // ログアウト
-    req.logout((err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json("Internal Server Error");
-      }
-      // セッションを削除
-      req.session.destroy((err) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).json("Internal Server Error");
-        }
-      });
-      return res.status(200).json({ isAuthenticated: false });
-    });
+    destroySession(req);
+    return res.status(200).json({ isAuthenticated: false });
   });
 
   return router;

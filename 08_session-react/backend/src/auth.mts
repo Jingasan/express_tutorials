@@ -64,11 +64,29 @@ export const authRouter = () => {
   );
 
   /**
+   * セッション削除
+   * @param req
+   */
+  const destroySession = (req: Request): void => {
+    // セッションを削除
+    req.session.destroy((err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+  };
+
+  /**
    * ログイン確認
    */
   router.get("/isAuthenticated", (req, res) => {
-    if (!req.session.isAuthenticated) req.session.isAuthenticated = false;
-    res.status(200).json({ isAuthenticated: req.session.isAuthenticated });
+    if (!req.session.isAuthenticated) {
+      destroySession(req);
+      return res.status(200).json({ isAuthenticated: false });
+    }
+    return res
+      .status(200)
+      .json({ isAuthenticated: req.session.isAuthenticated });
   });
 
   /**
@@ -96,14 +114,8 @@ export const authRouter = () => {
    * ログアウトAPI
    */
   router.post("/logout", (req: Request, res: Response) => {
-    req.session.isAuthenticated = false;
-    req.session.destroy((err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json("Internal Server Error");
-      }
-      return res.status(200).json({ isAuthenticated: false });
-    });
+    destroySession(req);
+    return res.status(200).json({ isAuthenticated: false });
   });
 
   return router;

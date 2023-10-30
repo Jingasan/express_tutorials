@@ -87,7 +87,6 @@ app.post("/login", (req: Request, res: Response) => {
  * ログアウトAPI
  */
 app.post("/logout", (req: Request, res: Response) => {
-  req.session.isAuthenticated = false;
   req.session.destroy((err) => {
     if (err) {
       console.error(err);
