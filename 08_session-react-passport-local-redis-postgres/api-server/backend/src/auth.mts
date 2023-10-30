@@ -89,14 +89,16 @@ export const authRouter = () => {
   passport.use(
     "local",
     new LocalStrategy.Strategy(async (username, password, cb) => {
-      const registeredPassword = await dbController.getPassword(username);
-      // ユーザー名不一致：認証失敗
-      if (!registeredPassword) return cb(null, false);
-      const hashedPassword = passwordToHash(password);
-      // パスワード不一致：認証失敗
-      if (registeredPassword !== hashedPassword) return cb(null, false);
-      // 認証成功時：セッションに含める情報を返す（パスワードは含めないこと）
-      return cb(null, { username: username });
+      process.nextTick(async () => {
+        const registeredPassword = await dbController.getPassword(username);
+        // ユーザー名不一致：認証失敗
+        if (!registeredPassword) return cb(null, false);
+        const hashedPassword = passwordToHash(password);
+        // パスワード不一致：認証失敗
+        if (registeredPassword !== hashedPassword) return cb(null, false);
+        // 認証成功時：セッションに含める情報を返す（パスワードは含めないこと）
+        return cb(null, { username: username });
+      });
     })
   );
 

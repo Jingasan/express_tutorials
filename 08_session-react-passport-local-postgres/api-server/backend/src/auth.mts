@@ -103,16 +103,18 @@ export const authRouter = () => {
   passport.use(
     "local",
     new LocalStrategy.Strategy((username, password, cb) => {
-      if (username !== Account.username) {
-        // ユーザー名不一致：認証失敗
-        return cb(null, false);
-      } else if (password !== Account.password) {
-        // パスワード不一致：認証失敗
-        return cb(null, false);
-      } else {
-        // 認証成功時：セッションに含める情報を返す（パスワードは含めないこと）
-        return cb(null, { username: Account.username });
-      }
+      process.nextTick(() => {
+        if (username !== Account.username) {
+          // ユーザー名不一致：認証失敗
+          return cb(null, false);
+        } else if (password !== Account.password) {
+          // パスワード不一致：認証失敗
+          return cb(null, false);
+        } else {
+          // 認証成功時：セッションに含める情報を返す（パスワードは含めないこと）
+          return cb(null, { username: Account.username });
+        }
+      });
     })
   );
 
