@@ -103,6 +103,7 @@ export const authRouter = () => {
   passport.use(
     "local",
     new LocalStrategy.Strategy((username, password, cb) => {
+      // 非同期で実行
       process.nextTick(() => {
         if (username !== Account.username) {
           // ユーザー名不一致：認証失敗

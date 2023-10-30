@@ -89,6 +89,7 @@ export const authRouter = () => {
   passport.use(
     "local",
     new LocalStrategy.Strategy(async (username, password, cb) => {
+      // 非同期で実行
       process.nextTick(async () => {
         const registeredPassword = await dbController.getPassword(username);
         // ユーザー名不一致：認証失敗
