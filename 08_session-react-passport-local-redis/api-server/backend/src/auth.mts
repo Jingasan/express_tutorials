@@ -102,8 +102,8 @@ export const authRouter = () => {
         // パスワード不一致：認証失敗
         return cb(null, false);
       } else {
-        // 認証成功時：ユーザー情報を返す
-        return cb(null, { username: username, password: password });
+        // 認証成功時：セッションに含める情報を返す（パスワードは含めないこと）
+        return cb(null, { username: Account.username });
       }
     })
   );

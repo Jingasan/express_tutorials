@@ -36,6 +36,7 @@ class DBController {
       // カラム
       id: {
         type: DataTypes.INTEGER,
+        primaryKey: true, // 主キー
         autoIncrement: true, // AUTO_INCREMENT
         allowNull: false, // Not Null
         comment: "ID",
