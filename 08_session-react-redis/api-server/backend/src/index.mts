@@ -4,6 +4,8 @@ import { authRouter } from "./auth.mjs";
 import { shoppingRouter } from "./shopping.mjs";
 const app = express();
 const PORT = 3000;
+// Secure Cookieを発行する場合に必要な設定
+app.set("trust proxy", 1);
 // リクエストボディのパース用設定
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

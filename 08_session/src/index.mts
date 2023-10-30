@@ -4,6 +4,8 @@ import cors from "cors";
 import { randomUUID } from "crypto";
 const app: Application = express();
 const PORT = 3000;
+// Secure Cookieを発行する場合に必要な設定
+app.set("trust proxy", 1);
 // リクエストボディのパース用設定
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,6 +25,11 @@ app.use(
       path: "/", // [Option] "/"(default): Cookieを送信するPATH
       httpOnly: true, // [Option] true(default): httpのみで使用, document.cookieを使ってCookieを扱えなくする
       maxAge: 10 * 1000, // [Option] Cookieの有効期限[ms]
+      secure: "auto", // [Option] auto(default): trueにすると、HTTPS接続のときのみCookieを発行する
+      // trueを設定した場合、「app.set("trust proxy", 1)」を設定する必要がある。
+      // Proxy背後にExpressを配置すると、Express自体はHTTPで起動するため、Cookieが発行されないが、
+      // これを設定しておくことで、Expressは自身がプロキシ背後に配置されていること、
+      // 信頼された「X-Forwarded-*」ヘッダーフィールドであることを認識し、Proxy背後でもCookieを発行するようになる。
     },
   })
 );

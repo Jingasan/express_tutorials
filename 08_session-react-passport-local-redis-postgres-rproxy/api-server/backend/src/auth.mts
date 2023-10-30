@@ -46,7 +46,7 @@ export const authRouter = () => {
    */
   const redisClient = new IORedis.Redis({
     port: Number(process.env.REDIS_SERVER_PORT), // Redisポート番号
-    host: String(process.env.REDIS_CONTAINER_IPV4), // Redisホスト名
+    host: String(process.env.REDIS_CONTAINER_NAME), // Redisホスト名
     username: "default", // needs Redis >= 6
     password: String(process.env.REDIS_SERVER_PASSWORD), // Redisパスワード
     db: 0, // DBインデックス: 0 (default)
