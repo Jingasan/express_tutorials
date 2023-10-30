@@ -82,6 +82,8 @@ services:
         - HTTPS_PROXY=$HTTPS_PROXY
         - https_proxy=$https_proxy
     platform: linux/amd64
+    ports:
+      - $REDIS_SERVER_PORT:$REDIS_SERVER_PORT
     volumes: # ボリュームのアタッチ
       - ./redis-server/data:/data # Redisの永続化データ
     command: redis-server --port $REDIS_SERVER_PORT --requirepass $REDIS_SERVER_PASSWORD --maxmemory $REDIS_CONTAINER_MAX_MEMORY --appendonly yes
@@ -116,6 +118,8 @@ services:
         - HTTPS_PROXY=$HTTPS_PROXY
         - https_proxy=$https_proxy
     platform: linux/amd64
+    ports:
+      - $DB_SERVER_PORT:$DB_SERVER_PORT
     volumes: # ボリュームのアタッチ
       - ./db-server/data:/var/lib/postgresql/data # DBデータ
     env_file:

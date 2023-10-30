@@ -54,7 +54,7 @@ export const authRouter = () => {
     String(process.env.POSTGRES_USER),
     String(process.env.POSTGRES_PASSWORD),
     {
-      host: String(process.env.DB_CONTAINER_IPV4),
+      host: String(process.env.DB_CONTAINER_NAME),
       port: Number(process.env.DB_SERVER_PORT),
       dialect: "postgres",
       logging: false, // true(default): 実行したSQLコマンドを標準出力する
