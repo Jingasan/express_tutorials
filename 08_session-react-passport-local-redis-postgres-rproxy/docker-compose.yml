@@ -48,6 +48,8 @@ services:
         - http_proxy=$http_proxy
         - HTTPS_PROXY=$HTTPS_PROXY
         - https_proxy=$https_proxy
+    ports:
+      - $NODE_API_SERVER_PORT:$NODE_API_SERVER_PORT
     depends_on:
       - redis-server
       - db-server

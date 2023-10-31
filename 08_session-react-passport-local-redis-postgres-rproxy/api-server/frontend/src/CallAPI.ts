@@ -40,18 +40,21 @@ export const checkAuthAPI = async (): Promise<boolean> => {
  * ログインAPI
  * @param username ログインユーザー名
  * @param password ログインパスワード
- * @returns true:ログイン成功/false:ログイン失敗
+ * @returns ステータスコード
  */
 export const loginAPI = async (
   username: string,
   password: string
-): Promise<boolean> => {
+): Promise<number | boolean> => {
   try {
     const apiURL = "/api/login";
     console.debug(apiURL);
     const response = await axios.post(apiURL, { username, password });
-    return response.data.isAuthenticated;
+    return response.status;
   } catch (err) {
+    if (axios.isAxiosError(err) && err.response) {
+      return err.response.status;
+    }
     return false;
   }
 };

@@ -6,10 +6,10 @@ import { signupAPI } from "./CallAPI";
  * サインアップページ
  */
 export default function Signup() {
-  // サインアップ成功メッセージを表示するかどうか
-  const [isSuccessMessage, setIsSuccessMessage] = React.useState(false);
-  // サインアップ失敗メッセージを表示するかどうか
-  const [isFailedMessage, setIsFailedMessage] = React.useState(false);
+  // 表示メッセージ
+  const [displayMessage, setDisplayMessage] = React.useState<JSX.Element>(
+    <div></div>
+  );
   // ユーザー名／パスワード
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -19,8 +19,7 @@ export default function Signup() {
    */
   React.useEffect(() => {
     // すべてのメッセージを非表示にする
-    setIsSuccessMessage(false);
-    setIsFailedMessage(false);
+    setDisplayMessage(<div></div>);
   }, []);
 
   /**
@@ -30,11 +29,9 @@ export default function Signup() {
     const res = await signupAPI(username, password);
     // メッセージの表示切替
     if (res) {
-      setIsSuccessMessage(true);
-      setIsFailedMessage(false);
+      setDisplayMessage(<div style={{ color: "blue" }}>サインアップ成功</div>);
     } else {
-      setIsSuccessMessage(false);
-      setIsFailedMessage(true);
+      setDisplayMessage(<div style={{ color: "red" }}>サインアップ失敗</div>);
     }
   };
 
@@ -56,16 +53,7 @@ export default function Signup() {
       <button onClick={handleSignup}>Signup</button>
       <br />
       <br />
-      {isSuccessMessage ? (
-        <div style={{ color: "blue" }}>サインアップ成功</div>
-      ) : (
-        ""
-      )}
-      {isFailedMessage ? (
-        <div style={{ color: "red" }}>サインアップ失敗</div>
-      ) : (
-        ""
-      )}
+      {displayMessage}
       <br />
       <Link to="/">ログインページへ移動</Link>
     </div>

@@ -8,8 +8,8 @@ import { checkAuthAPI, loginAPI, logoutAPI } from "./CallAPI";
 export default function App() {
   // ログイン済みかどうか
   const [isLogin, setIsLogin] = React.useState(false);
-  // ログイン処理に成功したかどうか
-  const [isLoginError, setIsLoginError] = React.useState(false);
+  // 表示メッセージ
+  const [displayMessage, setDisplayMessage] = React.useState(<div></div>);
   // ユーザー名／パスワード
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -18,7 +18,7 @@ export default function App() {
    * 画面の初期化：ログイン状態をチェック
    */
   React.useEffect(() => {
-    setIsLoginError(false);
+    setDisplayMessage(<div></div>);
     const init = async () => setIsLogin(await checkAuthAPI());
     init();
   }, []);
@@ -28,8 +28,21 @@ export default function App() {
    */
   const handleLogin = async () => {
     const res = await loginAPI(username, password);
-    setIsLogin(res);
-    setIsLoginError(!res);
+    // ステータスコード200の場合はログイン
+    if (res === 200) setIsLogin(true);
+    else setIsLogin(false);
+    // エラーメッセージの表示切替
+    if (res === 401 || res === false) {
+      setDisplayMessage(
+        <div style={{ color: "red" }}>エラー：ログイン認証に失敗しました。</div>
+      );
+    } else if (res === 429) {
+      setDisplayMessage(
+        <div style={{ color: "red" }}>
+          エラー：ログイン数が上限に達しました。
+        </div>
+      );
+    }
   };
 
   /**
@@ -66,7 +79,7 @@ export default function App() {
           <button onClick={handleLogin}>Login</button>
           <br />
           <br />
-          {isLoginError ? <div style={{ color: "red" }}>ログイン失敗</div> : ""}
+          {displayMessage}
         </div>
       )}
     </div>

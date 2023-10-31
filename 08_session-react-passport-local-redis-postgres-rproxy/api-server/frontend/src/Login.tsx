@@ -9,10 +9,8 @@ import { checkAuthAPI, loginAPI, logoutAPI, userdeleteAPI } from "./CallAPI";
 export default function Login() {
   // ログイン済みかどうか
   const [isLogin, setIsLogin] = React.useState(false);
-  // ログイン失敗メッセージを表示するかどうか
-  const [isLoginFailedMessage, setIsLoginFailedMessage] = React.useState(false);
-  // ユーザー削除成功メッセージを表示するかどうか
-  const [isUserDeletedMessage, setIsUserDeletedMessage] = React.useState(false);
+  // 表示メッセージ
+  const [displayMessage, setDisplayMessage] = React.useState(<div></div>);
   // ユーザー名／パスワード
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -21,8 +19,7 @@ export default function Login() {
    * 画面の初期化：ログイン状態をチェック
    */
   React.useEffect(() => {
-    setIsLoginFailedMessage(false);
-    setIsUserDeletedMessage(false);
+    setDisplayMessage(<div></div>);
     const init = async () => setIsLogin(await checkAuthAPI());
     init();
   }, []);
@@ -32,9 +29,21 @@ export default function Login() {
    */
   const handleLogin = async () => {
     const res = await loginAPI(username, password);
-    setIsLogin(res);
-    setIsLoginFailedMessage(!res);
-    setIsUserDeletedMessage(false);
+    // ステータスコード200の場合はログイン
+    if (res === 200) setIsLogin(true);
+    else setIsLogin(false);
+    // エラーメッセージの表示切替
+    if (res === 401 || res === false) {
+      setDisplayMessage(
+        <div style={{ color: "red" }}>エラー：ログイン認証に失敗しました。</div>
+      );
+    } else if (res === 429) {
+      setDisplayMessage(
+        <div style={{ color: "red" }}>
+          エラー：ログイン数が上限に達しました。
+        </div>
+      );
+    }
   };
 
   /**
@@ -51,8 +60,9 @@ export default function Login() {
   const handleDeleteUser = async () => {
     await userdeleteAPI(username);
     setIsLogin(false);
-    setIsLoginFailedMessage(false);
-    setIsUserDeletedMessage(true);
+    setDisplayMessage(
+      <div style={{ color: "blue" }}>ユーザーを削除しました。</div>
+    );
   };
 
   return (
@@ -82,16 +92,7 @@ export default function Login() {
           <button onClick={handleLogin}>Login</button>
           <br />
           <br />
-          {isLoginFailedMessage ? (
-            <div style={{ color: "red" }}>ログイン失敗</div>
-          ) : (
-            ""
-          )}
-          {isUserDeletedMessage ? (
-            <div style={{ color: "blue" }}>ユーザーを削除しました</div>
-          ) : (
-            ""
-          )}
+          {displayMessage}
           <br />
           <Link to="/Signup">サインアップページへ移動</Link>
         </div>
