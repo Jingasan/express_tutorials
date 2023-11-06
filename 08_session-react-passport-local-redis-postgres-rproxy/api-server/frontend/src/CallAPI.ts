@@ -9,14 +9,17 @@ import axios from "axios";
 export const signupAPI = async (
   username: string,
   password: string
-): Promise<boolean> => {
+): Promise<{ result: boolean; errors: string[] }> => {
   try {
     const apiURL = "/api/signup";
     console.debug(apiURL);
     const response = await axios.post(apiURL, { username, password });
-    return response.data.result;
+    return { result: response.data.result, errors: [] };
   } catch (err) {
-    return false;
+    if (axios.isAxiosError(err) && err.response) {
+      return { result: false, errors: err.response.data.errors };
+    }
+    return { result: false, errors: [] };
   }
 };
 

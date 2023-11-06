@@ -28,10 +28,19 @@ export default function Signup() {
   const handleSignup = async () => {
     const res = await signupAPI(username, password);
     // メッセージの表示切替
-    if (res) {
+    if (res.result) {
       setDisplayMessage(<div style={{ color: "blue" }}>サインアップ成功</div>);
     } else {
-      setDisplayMessage(<div style={{ color: "red" }}>サインアップ失敗</div>);
+      setDisplayMessage(
+        <div style={{ color: "red" }}>
+          <div>サインアップ失敗</div>
+          <br />
+          <div>Reason:</div>
+          {res.errors.map((err, index) => {
+            return <div key={index}>{err}</div>;
+          })}
+        </div>
+      );
     }
   };
 
