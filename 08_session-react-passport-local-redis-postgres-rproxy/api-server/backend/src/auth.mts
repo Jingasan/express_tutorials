@@ -11,7 +11,7 @@ import passport from "passport";
 import LocalStrategy from "passport-local";
 import { randomUUID } from "crypto";
 import RedisStore from "connect-redis";
-import * as IORedis from "ioredis";
+import { Redis } from "ioredis";
 import { createHash } from "crypto";
 import { dbController } from "./account.mjs";
 
@@ -51,7 +51,7 @@ export const authRouter = () => {
   /**
    * Redisセッションストアの設定
    */
-  const redisClient = new IORedis.Redis({
+  const redisClient = new Redis({
     host: String(process.env.REDIS_CONTAINER_NAME), // Redisホスト名
     port: Number(process.env.REDIS_SERVER_PORT), // Redisポート番号
     username: "default", // needs Redis >= 6
