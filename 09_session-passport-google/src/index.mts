@@ -53,9 +53,9 @@ passport.use(
   "google",
   new GoogleStrategy.Strategy(
     {
-      clientID: "XXXXX.apps.googleusercontent.com", // OAuthクライアントID
-      clientSecret: "XXXXX", // OAuthクライアントシークレット
-      callbackURL: "/auth/callback", // コールバック先のAPIURL(GoogleCloudのクライアントIDにも登録されている必要あり)
+      clientID: "XXXXXXXXXX", // OAuthクライアントID
+      clientSecret: "XXXXXXXXXX", // OAuthクライアントシークレット
+      callbackURL: "/auth/callback", // リダイレクト先のAPIURL(GoogleCloudのクライアントIDにも登録されている必要あり)
       passReqToCallback: true, // Callback先にリクエストパラメータを渡すかどうか
     },
     (_req, _accessToken, _refreshToken, profile, cb) => {
@@ -87,37 +87,24 @@ app.get("/", (_req: Request, res: Response) => {
   res.send(`
     <html>
       <body>
-        <div><a href="/auth/google">Googleアカウントでログイン</a></div>
+        <div><a href="/auth/callback">Googleアカウントでログイン</a></div>
       </body>
     </html>
   `);
 });
 
 /**
- * Google認証
- */
-app.get(
-  "/auth/google",
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  passport.authenticate("google", {
-    scope: ["email", "profile"], // スコープ
-    prompt: "consent", // Google認証ページを開く
-  }),
-  () => {}
-);
-
-/**
- * Google認証成功時のリダイレクト先API
+ * Google認証のリダイレクトAPI
  */
 app.get(
   "/auth/callback",
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   passport.authenticate("google", {
     scope: ["email", "profile"], // スコープ
-    successRedirect: "/mypage", // Google認証できている場合のリダイレクト先
-    failureRedirect: "/", // Google認証できていない場合のリダイレクト先
-  }),
-  () => {}
+    successRedirect: "/mypage", // 認証成功時のリダイレクト先
+    failureRedirect: "/", // 認証失敗時のリダイレクト先
+    prompt: "consent", // Google認証ページを開く
+  })
 );
 
 /**
