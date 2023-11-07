@@ -141,11 +141,12 @@ app.get("/", (req: Request, res: Response) => {
 /**
  * ログアウト処理
  */
-app.get("/logout", (req: Request, res: Response, next: NextFunction) => {
+app.get("/logout", (req: Request, res: Response) => {
   // ログアウト
   req.logout((err) => {
     if (err) {
-      return next(err);
+      console.error(err);
+      return;
     }
     // セッションを削除
     req.session.destroy((err) => {
