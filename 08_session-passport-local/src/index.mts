@@ -5,7 +5,7 @@
  * ３．deserializeUserでセッションからユーザー情報を取得。
  * ４．毎度deserializeUserが動くことで、ログイン状態が保持される。
  */
-import express, { Application, Request, Response, NextFunction } from "express";
+import express, { Application, Request, Response } from "express";
 import session from "express-session";
 import passport from "passport";
 import LocalStrategy from "passport-local";
