@@ -20,7 +20,7 @@ export const checkAuthAPI = async (): Promise<boolean> => {
  * ログインAPI
  */
 export const loginAPI = (): void => {
-  window.open(`/api/auth/callback`, "_self");
+  window.open("/api/login/google", "_self");
 };
 
 /**

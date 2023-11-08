@@ -63,7 +63,8 @@ export const authRouter = () => {
 
   /**
    * セッションの設定
-   * デフォルトではセッションはインメモリに保管される(APIサーバーが複数台になるような実運用環境下では利用できない)
+   * デフォルトではセッションはインメモリに保管される
+   * → APIサーバーが複数台になるような実運用環境下では利用できない
    * 実運用環境では必ずRedisやDBをセッションストアとして用いること
    */
   router.use(
@@ -81,7 +82,8 @@ export const authRouter = () => {
         // trueを設定した場合、「app.set("trust proxy", 1)」を設定する必要がある。
         // Proxy背後にExpressを配置すると、Express自体はHTTPで起動するため、Cookieが発行されないが、
         // これを設定しておくことで、Expressは自身がプロキシ背後に配置されていること、
-        // 信頼された「X-Forwarded-*」ヘッダーフィールドであることを認識し、Proxy背後でもCookieを発行するようになる。
+        // 信頼された「X-Forwarded-*」ヘッダーフィールドであることを認識し、
+        // Proxy背後でもCookieを発行するようになる。
       },
       store: redisStore, // [Option] セッションストア
     })
@@ -103,7 +105,7 @@ export const authRouter = () => {
         scope: ["profile", "email"],
         clientID: String(process.env.GOOGLE_OAUTH_CLIENT_ID), // OAuthクライアントID
         clientSecret: String(process.env.GOOGLE_OAUTH_CLIENT_SECRET), // OAuthクライアントシークレット
-        callbackURL: "/api/auth/callback", // コールバック先のAPIURL(GoogleCloudのクライアントIDにも登録されている必要あり)
+        callbackURL: "/api/login/google", // コールバック先のAPIURL(GoogleCloudのクライアントIDにも登録されている必要あり)
         passReqToCallback: true, // Callback先にリクエストパラメータを渡すかどうか
       },
       (_req, _accessToken, _refreshToken, profile, cb) => {
@@ -139,7 +141,7 @@ export const authRouter = () => {
    * Google認証のリダイレクトAPI
    */
   router.get(
-    "/auth/callback",
+    "/login/google",
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     passport.authenticate("google", {
       scope: ["email", "profile"], // スコープ

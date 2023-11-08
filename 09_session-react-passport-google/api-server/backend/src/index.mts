@@ -10,13 +10,7 @@ app.set("trust proxy", 1);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // CORS設定
-app.use(
-  cors({
-    origin: "*",
-    methods: "*",
-    allowedHeaders: "*",
-  })
-);
+app.use(cors());
 // Webページの提供
 app.use(express.static("/frontend"));
 
