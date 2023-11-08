@@ -38,7 +38,8 @@ app.use(
       // trueを設定した場合、「app.set("trust proxy", 1)」を設定する必要がある。
       // Proxy背後にExpressを配置すると、Express自体はHTTPで起動するため、Cookieが発行されないが、
       // これを設定しておくことで、Expressは自身がプロキシ背後に配置されていること、
-      // 信頼された「X-Forwarded-*」ヘッダーフィールドであることを認識し、Proxy背後でもCookieを発行するようになる。
+      // 信頼された「X-Forwarded-*」ヘッダーフィールドであることを認識し、
+      // Proxy背後でもCookieを発行するようになる。
     },
   })
 );
@@ -55,7 +56,7 @@ passport.use(
     {
       clientID: "XXXXXXXXXX", // OAuthクライアントID
       clientSecret: "XXXXXXXXXX", // OAuthクライアントシークレット
-      callbackURL: "/auth/callback", // リダイレクト先のAPIURL(GoogleCloudのクライアントIDにも登録されている必要あり)
+      callbackURL: "/api/login/google", // リダイレクト先のAPIURL(GoogleCloudのクライアントIDにも登録されている必要あり)
       passReqToCallback: true, // Callback先にリクエストパラメータを渡すかどうか
     },
     (_req, _accessToken, _refreshToken, profile, cb) => {
@@ -87,7 +88,7 @@ app.get("/", (_req: Request, res: Response) => {
   res.send(`
     <html>
       <body>
-        <div><a href="/auth/callback">Googleアカウントでログイン</a></div>
+        <div><a href="/api/login/google">Googleアカウントでログイン</a></div>
       </body>
     </html>
   `);
@@ -97,7 +98,7 @@ app.get("/", (_req: Request, res: Response) => {
  * Google認証のリダイレクトAPI
  */
 app.get(
-  "/auth/callback",
+  "/api/login/google",
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   passport.authenticate("google", {
     scope: ["email", "profile"], // スコープ
@@ -123,7 +124,7 @@ app.get(
       <html>
         <body>
           <div>ログインユーザー名：${username}</div>
-          <div><a href="/logout">ログアウト</a></div>
+          <div><a href="/api/logout">ログアウト</a></div>
         </body>
       </html>
     `);
@@ -133,7 +134,7 @@ app.get(
 /**
  * ログアウト処理
  */
-app.get("/logout", (req: Request, res: Response) => {
+app.get("/api/logout", (req: Request, res: Response) => {
   // ログアウト
   req.logout((err) => {
     if (err) {
