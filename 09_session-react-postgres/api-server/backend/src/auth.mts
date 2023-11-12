@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import session from "express-session";
 import { randomUUID } from "crypto";
-import { Sequelize, QueryTypes, NUMBER } from "sequelize";
+import { Sequelize, QueryTypes } from "sequelize";
 import CSS from "connect-session-sequelize";
 
 // セッションで扱うデータ（SessionData）の型宣言
