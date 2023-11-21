@@ -1,11 +1,12 @@
 {
-  "name": "docker",
+  "name": "express",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "dist/index.mjs",
   "scripts": {
-    "build": "tsx esbuild.config.ts",
-    "dev": "tsx watch src/index.ts"
+    "build": "tsc",
+    "dev": "tsx watch src/index.mts"
   },
   "keywords": [],
   "author": "",

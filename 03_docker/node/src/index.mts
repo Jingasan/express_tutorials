@@ -1,6 +1,6 @@
-import express, { Application, Request, Response } from "express";
+import express from "express";
 import cors from "cors";
-const app: Application = express();
+const app = express();
 const PORT = 3000;
 // リクエストボディのパース用設定
 app.use(express.json());
@@ -8,7 +8,7 @@ app.use(express.urlencoded({ extended: true }));
 // CORS設定
 app.use(cors());
 // GET
-app.get("/", async (req: Request, res: Response) => {
+app.get("/", async (_req, res) => {
   return res.status(200).send({
     message: "Hello World!",
   });
