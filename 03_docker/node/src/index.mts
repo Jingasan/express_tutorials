@@ -13,6 +13,10 @@ app.get("/", async (_req, res) => {
     message: "Hello World!",
   });
 });
+// Error 404 Not Found
+app.use((_req, res) => {
+  return res.status(404).json({ error: "Not Found" });
+});
 // サーバーを起動する処理
 try {
   app.listen(PORT, () => {
