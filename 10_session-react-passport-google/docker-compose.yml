@@ -31,8 +31,7 @@ services:
           memory: $NODE_API_CONTAINER_MIN_MEMORY # 必須メモリ量
     restart: always # 再起動条件：常に
     networks:
-      backend:
-        ipv4_address: $API_CONTAINER_IPV4 # コンテナのIPアドレス
+      - backend
   redis-server:
     container_name: $REDIS_CONTAINER_NAME
     image: $REDIS_CONTAINER_IMAGE
@@ -66,13 +65,9 @@ services:
           memory: $REDIS_CONTAINER_MIN_MEMORY # 必須メモリ量
     restart: always # 再起動条件：常に
     networks:
-      backend:
-        ipv4_address: $REDIS_CONTAINER_IPV4 # コンテナのIPアドレス
+      - backend
 # ネットワーク設定
 networks:
   backend:
-    driver: bridge
-    name: $NETWORK_NAME
-    ipam:
-      config:
-        - subnet: $SUBNET
+    driver: bridge # ネットワークタイプ
+    name: $NETWORK_NAME # Dockerネットワーク名
