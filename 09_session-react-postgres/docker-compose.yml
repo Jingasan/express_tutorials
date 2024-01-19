@@ -31,8 +31,7 @@ services:
           memory: $NODE_API_CONTAINER_MIN_MEMORY # 必須メモリ量
     restart: always # 再起動条件：常に
     networks:
-      backend:
-        ipv4_address: $API_CONTAINER_IPV4 # コンテナのIPアドレス
+      - backend
   db-server:
     container_name: $DB_CONTAINER_NAME
     image: $DB_CONTAINER_IMAGE
@@ -65,13 +64,9 @@ services:
           memory: $DB_CONTAINER_MIN_MEMORY # 必須メモリ量
     restart: always # 再起動条件：常に
     networks:
-      backend:
-        ipv4_address: $DB_CONTAINER_IPV4 # コンテナのIPアドレス
+      - backend
 # ネットワーク設定
 networks:
   backend:
-    driver: bridge
-    name: $NETWORK_NAME
-    ipam:
-      config:
-        - subnet: $SUBNET
+    driver: bridge # ネットワークタイプ
+    name: $NETWORK_NAME # Dockerネットワーク名
