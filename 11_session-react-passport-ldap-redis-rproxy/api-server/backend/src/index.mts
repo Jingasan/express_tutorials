@@ -38,12 +38,8 @@ app.use((_req: Request, res: Response) => {
  * サーバーの起動処理
  */
 try {
-  app.listen(PORT, () => {
-    console.log("server running at port:" + PORT);
-  });
+  app.listen(PORT, () => console.log("server running at port:" + PORT));
 } catch (e) {
-  if (e instanceof Error) {
-    console.error(e.message);
-  }
+  if (e instanceof Error) console.error(e.message);
   process.exit(-1);
 }
