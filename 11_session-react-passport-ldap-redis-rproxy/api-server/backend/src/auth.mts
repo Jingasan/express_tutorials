@@ -99,13 +99,18 @@ export const authRouter = () => {
    */
   const ldapOpt = {
     server: {
+      // ディレクトリサーバーのLDAPエンドポイント
       url: `ldap://${String(process.env.LDAP_CONTAINER_NAME)}:${Number(
         process.env.LDAP_SERVER_PORT
       )}`,
-      searchBase: "dc=example,dc=org",
-      searchFilter: "(uid={{username}})",
+      // LDAP認証時にディレクトリサービスに問い合わせを行うユーザー
       bindDN: `cn=${String(process.env.LDAP_ADMIN_USERNAME)},dc=example,dc=org`,
+      // LDAP認証時にディレクトリサービスに問い合わせを行うユーザーのパスワード
       bindCredentials: String(process.env.LDAP_ADMIN_PASSWORD),
+      // BaseDN: LDAP認証時にユーザーを検索する際のルートとなる階層
+      searchBase: "dc=example,dc=org",
+      // 認証対象のユーザー
+      searchFilter: "(uid={{username}})",
     },
   };
   passport.use("ldap", new LDAPStrategy(ldapOpt));
