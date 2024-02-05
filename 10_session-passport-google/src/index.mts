@@ -1,6 +1,6 @@
 /**
  * 処理の流れ
- * １．LocalStrategyでユーザー情報を取得。
+ * １．GoogleStrategyでユーザー情報を取得。
  * ２．serializeUserでセッションにユーザー情報を格納。
  * ３．deserializeUserでセッションからユーザー情報を取得。
  * ４．毎度deserializeUserが動くことで、ログイン状態が保持される。
