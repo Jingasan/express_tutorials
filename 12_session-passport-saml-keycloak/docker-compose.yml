@@ -1,0 +1,82 @@
+version: "3.9"
+services:
+  # APIサーバー
+  test-api-server:
+    container_name: $NODE_API_CONTAINER_NAME
+    image: $NODE_API_CONTAINER_IMAGE
+    build:
+      context: ./api-server
+      dockerfile: Dockerfile
+      args:
+        - HTTP_PROXY=$HTTP_PROXY
+        - http_proxy=$http_proxy
+        - HTTPS_PROXY=$HTTPS_PROXY
+        - https_proxy=$https_proxy
+    ports:
+      - $NODE_API_SERVER_EXTERNAL_PORT:$NODE_API_SERVER_INTERNAL_PORT
+    depends_on:
+      - test-saml-server
+    env_file:
+      - .env
+    deploy:
+      mode: replicated
+      replicas: 1 # 起動コンテナ数
+      placement:
+        max_replicas_per_node: 1
+      resources:
+        limits: # リソース量上限
+          cpus: $NODE_API_CONTAINER_MAX_CPU # CPUコア数上限
+          memory: $NODE_API_CONTAINER_MAX_MEMORY # メモリ量上限
+        reservations: # 必須リソース量
+          cpus: $NODE_API_CONTAINER_MIN_CPU # 必須CPUコア数
+          memory: $NODE_API_CONTAINER_MIN_MEMORY # 必須メモリ量
+    restart: always # 再起動条件：常に
+    networks:
+      - backend
+  # SAML IdPサーバー
+  test-saml-server:
+    container_name: $SAML_IDP_CONTAINER_NAME
+    image: $SAML_IDP_CONTAINER_IMAGE
+    build:
+      context: ./saml-server
+      dockerfile: Dockerfile
+      args:
+        - HTTP_PROXY=$HTTP_PROXY
+        - http_proxy=$http_proxy
+        - HTTPS_PROXY=$HTTPS_PROXY
+        - https_proxy=$https_proxy
+    stdin_open: true
+    ports:
+      - $SAML_IDP_SERVER_EXTERNAL_PORT:$SAML_IDP_SERVER_INTERNAL_PORT
+    volumes:
+      - keycloak-volume:/opt/keycloak/data
+    environment:
+      - KEYCLOAK_ADMIN=$SAML_IDP_SERVER_KEYCLOAK_ADMIN # 管理者ユーザーID
+      - KEYCLOAK_ADMIN_PASSWORD=$SAML_IDP_SERVER_KEYCLOAK_ADMIN_PASSWORD # 管理者ユーザーパスワード
+    command: [$SAML_IDP_SERVER_KEYCLOAK_MODE] # 起動モード(start-dev:開発モード/start:本番モード)
+    env_file:
+      - .env
+    deploy:
+      mode: replicated
+      replicas: 1 # 起動コンテナ数
+      placement:
+        max_replicas_per_node: 1
+      resources:
+        limits: # リソース量上限
+          cpus: $SAML_IDP_CONTAINER_MAX_CPU # CPUコア数上限
+          memory: $SAML_IDP_CONTAINER_MAX_MEMORY # メモリ量上限
+        reservations: # 必須リソース量
+          cpus: $SAML_IDP_CONTAINER_MIN_CPU # 必須CPUコア数
+          memory: $SAML_IDP_CONTAINER_MIN_MEMORY # 必須メモリ量
+    restart: always # 再起動条件：常に
+    networks:
+      - backend
+# ボリューム設定
+volumes:
+  keycloak-volume:
+    name: keycloak-volume
+# ネットワーク設定
+networks:
+  backend:
+    driver: bridge # ネットワークタイプ
+    name: $NETWORK_NAME # Dockerネットワーク名
