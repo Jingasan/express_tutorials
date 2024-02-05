@@ -145,28 +145,6 @@ export const authRouter = () => {
   });
 
   /**
-   * 有効セッション数の制限
-   * @param req
-   * @param res
-   * @returns
-   */
-  const sessionNumLimitMiddleware = async (
-    _req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    const maxSessionNum = Number(process.env.NODE_API_SERVER_MAX_SESSION_NUM); // 最大有効セッション数
-    const sessions = await redisClient.keys("session:*");
-    if (sessions.length >= maxSessionNum) {
-      console.info(
-        `[INFO] The number of sessions has reached the maximum limit: ${sessions.length}`
-      );
-      return res.status(429).json({ isAuthenticated: false });
-    }
-    next();
-  };
-
-  /**
    * ログイン確認API
    */
   router.get("/isAuthenticated", (req, res) => {
@@ -178,7 +156,6 @@ export const authRouter = () => {
    */
   router.get(
     "/login",
-    sessionNumLimitMiddleware,
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     samlAuthenticate
   );
