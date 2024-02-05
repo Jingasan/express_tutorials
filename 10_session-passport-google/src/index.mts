@@ -5,13 +5,13 @@
  * ３．deserializeUserでセッションからユーザー情報を取得。
  * ４．毎度deserializeUserが動くことで、ログイン状態が保持される。
  */
-import express, { Application, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import session from "express-session";
 import passport from "passport";
 import GoogleStrategy from "passport-google-oauth20";
 import cors from "cors";
 import { randomUUID } from "crypto";
-const app: Application = express();
+const app = express();
 const PORT = 3000;
 // Secure Cookieを発行する場合に必要な設定
 app.set("trust proxy", 1);
@@ -74,7 +74,7 @@ passport.use(
  * セッションにユーザー情報を格納
  */
 passport.serializeUser((user, cb) => {
-  cb(null, user);
+  return cb(null, user);
 });
 
 /**
@@ -88,7 +88,7 @@ passport.deserializeUser((user, cb) => {
  * ログインページ
  */
 app.get("/", (_req: Request, res: Response) => {
-  res.send(`
+  return res.send(`
     <html>
       <body>
         <div><a href="/api/login/google">Googleアカウントでログイン</a></div>
@@ -123,7 +123,7 @@ app.get(
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
     const username = String((req.user as any).username);
-    res.send(`
+    return res.send(`
       <html>
         <body>
           <div>ログインユーザー名：${username}</div>
@@ -157,19 +157,15 @@ app.get("/api/logout", (req: Request, res: Response) => {
 /**
  * Error 404 Not Found
  */
-app.use((_req: Request, res: Response) => {
-  return res.status(404).json({ error: "Not Found" });
-});
+app.use((_req: Request, res: Response) =>
+  res.status(404).json({ error: "Not Found" })
+);
 
 /**
  * サーバーを起動処理
  */
 try {
-  app.listen(PORT, () => {
-    console.log("server running at port:" + PORT);
-  });
+  app.listen(PORT, () => console.log("server running at port:" + PORT));
 } catch (e) {
-  if (e instanceof Error) {
-    console.error(e.message);
-  }
+  if (e instanceof Error) console.error(e.message);
 }

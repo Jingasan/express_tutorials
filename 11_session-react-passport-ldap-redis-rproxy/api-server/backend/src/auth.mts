@@ -119,7 +119,7 @@ export const authRouter = () => {
    * セッションにユーザー情報を格納
    */
   passport.serializeUser((user, cb) => {
-    cb(null, user);
+    return cb(null, user);
   });
 
   /**

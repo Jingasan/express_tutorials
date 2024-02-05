@@ -120,7 +120,7 @@ export const authRouter = () => {
    * セッションにユーザー情報を格納
    */
   passport.serializeUser((user, cb) => {
-    cb(null, user);
+    return cb(null, user);
   });
 
   /**
@@ -134,7 +134,7 @@ export const authRouter = () => {
    * ログイン確認API
    */
   router.get("/isAuthenticated", (req, res) => {
-    res.status(200).json({ isAuthenticated: req.isAuthenticated() });
+    return res.status(200).json({ isAuthenticated: req.isAuthenticated() });
   });
 
   /**
