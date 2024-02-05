@@ -41,7 +41,7 @@ app.use(
     cookie: {
       path: "/", // [Option] "/"(default): Cookieを送信するPATH
       httpOnly: true, // [Option] true(default): httpのみで使用, document.cookieを使ってCookieを扱えなくする
-      maxAge: 10 * 1000, // [Option] Cookieの有効期限[ms]
+      maxAge: Number(process.env.NODE_API_SERVER_SESSION_TIMEOUT) * 1000, // [Option] Cookieの有効期限[ms]
       secure: "auto", // [Option] auto(default): trueにすると、HTTPS接続のときのみCookieを発行する
       // trueを設定した場合、「app.set("trust proxy", 1)」を設定する必要がある。
       // Proxy背後にExpressを配置すると、Express自体はHTTPで起動するため、Cookieが発行されないが、
