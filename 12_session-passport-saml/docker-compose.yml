@@ -50,10 +50,11 @@ services:
       - $SAML_IDP_SERVER_EXTERNAL_PORT:$SAML_IDP_SERVER_INTERNAL_PORT
     volumes:
       - keycloak-volume:/opt/keycloak/data
+      - ./saml-server/import-realms:/opt/keycloak/data/import
     environment:
       - KEYCLOAK_ADMIN=$SAML_IDP_SERVER_KEYCLOAK_ADMIN # 管理者ユーザーID
       - KEYCLOAK_ADMIN_PASSWORD=$SAML_IDP_SERVER_KEYCLOAK_ADMIN_PASSWORD # 管理者ユーザーパスワード
-    command: [$SAML_IDP_SERVER_KEYCLOAK_MODE] # 起動モード(start-dev:開発モード/start:本番モード)
+    command: [$SAML_IDP_SERVER_KEYCLOAK_MODE, "--import-realm"] # 起動モード(start-dev:開発モード/start:本番モード)
     env_file:
       - .env
     deploy:
