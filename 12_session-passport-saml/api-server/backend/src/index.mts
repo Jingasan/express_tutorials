@@ -62,13 +62,13 @@ passport.use(
   "saml",
   new SAMLStrategy(
     {
-      // IdPからのSP側コールバックURL
+      // IdPからコールバックするSPのURL
       callbackUrl: String(process.env.SAML_IDP_SERVER_CALLBACK_URL),
       // IdPのエンドポイント(SAML認証画面URL)
       entryPoint: String(process.env.SAML_IDP_SERVER_ENTRYPOINT),
-      // AuthnRequestの発行者名(SAML IdPサーバーに設定されている必要あり)
+      // AuthnRequestの発行者名(IdPに設定されている必要あり)
       issuer: String(process.env.SAML_IDP_SERVER_ISSUER),
-      // IdPに設定するサーバー証明書
+      // IdPから発行するサーバー証明書公開鍵
       cert: fs.readFileSync("idp-public-cert.pem", "utf8"),
     },
     (profile: Profile, done: VerifiedCallback) => {
