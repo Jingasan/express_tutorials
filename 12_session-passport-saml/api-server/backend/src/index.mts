@@ -138,7 +138,6 @@ app.get(
   "/mypage",
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   (req: Request, res: Response) => {
-    console.log("a");
     if (!req.isAuthenticated()) {
       return res.redirect("/");
     }
