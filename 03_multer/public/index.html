@@ -5,21 +5,10 @@
     <title>Upload Page</title>
   </head>
   <body>
-    <style>
-      form {
-        display: flex;
-        flex-direction: column;
-        max-width: 500px;
-        margin: 1rem auto;
-      }
-      input {
-        margin-bottom: 1rem;
-      }
-    </style>
     <h1>Upload Page</h1>
     <form action="/" method="POST" enctype="multipart/form-data">
-      <input type="file" name="file" id="file" accept="image/png image/jpeg" />
-      <button type="submit">Send</button>
+      <input type="file" name="file" />
+      <button type="submit">送信</button>
     </form>
   </body>
 </html>

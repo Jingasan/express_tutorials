@@ -21,12 +21,13 @@ const storage = multer.diskStorage({
 const uploader = multer({
   storage,
   fileFilter(_req, file, callback) {
-    console.log(file.mimetype);
     // ファイル拡張子チェック
     if (["image/png", "image/jpeg"].includes(file.mimetype)) {
+      console.log("accept: " + file.mimetype);
       callback(null, true);
       return;
     }
+    console.log("reject: " + file.mimetype);
     callback(null, false);
   },
 });
